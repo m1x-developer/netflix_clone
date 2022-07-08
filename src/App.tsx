@@ -1,20 +1,34 @@
-import React from 'react'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import MailLayout from './layouts/MainLayout'
-import { ReactQueryDevtools } from 'react-query/devtools'
+import {QueryClient, QueryClientProvider} from 'react-query'
+import {BrowserRouter} from 'react-router-dom'
+import {ReactQueryDevtools} from 'react-query/devtools'
+import {AppRoutes} from './routes'
+import {store} from './redux'
+import {Provider} from 'react-redux'
+import './firebase'
+import './scss/app.scss'
+import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    signInWithRedirect,
+    inMemoryPersistence,
+    GoogleAuthProvider
+} from "firebase/auth";
+import {useEffect} from "react";
+
 const queryClient = new QueryClient()
+
 function App() {
-	return (
-		<QueryClientProvider client={queryClient}>
-			<BrowserRouter>
-				<Routes>
-					<Route path='/' element={<MailLayout />} />
-				</Routes>
-			</BrowserRouter>
-			<ReactQueryDevtools initialIsOpen={false} />
-		</QueryClientProvider>
-	)
+    return (
+        <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+                <Provider store={store}>
+                    <AppRoutes/>
+                </Provider>
+            </BrowserRouter>
+            <ReactQueryDevtools initialIsOpen={false}/>
+        </QueryClientProvider>
+    )
 }
 
 export default App
