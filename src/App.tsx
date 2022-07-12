@@ -6,15 +6,6 @@ import {store} from './redux'
 import {Provider} from 'react-redux'
 import './firebase'
 import './scss/app.scss'
-import {
-    getAuth,
-    onAuthStateChanged,
-    setPersistence,
-    signInWithRedirect,
-    inMemoryPersistence,
-    GoogleAuthProvider
-} from "firebase/auth";
-import {useEffect} from "react";
 
 const queryClient = new QueryClient()
 

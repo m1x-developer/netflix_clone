@@ -4,19 +4,17 @@ import DetailVideo from "../pages/DetailVideo/DetailVideo";
 
 export const protectedRoutes = [
 	{
-		path: '/homepage',
+		path: '/homepage/',
 		element: <Homepage />,
 		children: [
-			{ path: '/homepage/*', element: <Homepage /> },
-			{ path: '*', element: <Navigate to='.' /> },
+			{ path: '/homepage/', element: <Homepage /> },
 		],
 	},
 	{
-		path: '/detailvideo',
+		path: '/detailvideo/',
 		element: <DetailVideo />,
 		children: [
-			{ path: '/detailvideo/*', element: <DetailVideo /> },
-			{ path: '*', element: <Navigate to='.' /> },
+			{ path: '/detailvideo/:id', element: <DetailVideo /> },
 		],
 	},
 ]

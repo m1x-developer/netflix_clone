@@ -17,29 +17,26 @@ export const AppRoutes = () => {
     const navigate = useNavigate()
 
     const [user, loading, error] = useAuthState(auth)
-    console.log(user,loading,error)
 
+    useEffect(() => {
+        const authFunc = async () => {
+            await onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    dispatch(setUser({
+                        email: user.email,
+                        id: user.uid,
+                        token: user.refreshToken,
+                    }))
+                    // navigate('/homepage')
+                } else {
+                    // navigate('/')
+                }
 
+            });
+        }
 
-    useEffect(()=>{
-       const  authFunc = async () => {
-          await onAuthStateChanged(auth, (user) => {
-               if (user) {
-                   dispatch(setUser({
-                       email: user.email,
-                       id: user.uid,
-                       token: user.refreshToken,
-                   }))
-                   navigate('/homepage')
-               } else {
-                   navigate('/')
-               }
-
-           });
-       }
-
-       authFunc()
-    },[])
+        authFunc()
+    }, [])
 
 
     const {isAuth} = useAuth()
@@ -51,8 +48,8 @@ export const AppRoutes = () => {
 
     const element = useRoutes([...routes, ...commonRoutes])
 
-    if(loading) {
-        return  <LoadingOverlay visible={true} />
+    if (loading) {
+        return <LoadingOverlay visible/>
     }
 
     return <>{element}</>
