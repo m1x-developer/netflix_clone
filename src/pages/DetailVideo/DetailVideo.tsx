@@ -1,7 +1,7 @@
 import './detailVideo.scss'
 import {Header} from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
-import {Star, X} from 'tabler-icons-react';
+import {MessageCircle, Photo, Settings, Star, X} from 'tabler-icons-react';
 // @ts-ignore
 import YouTube from "react-youtube";
 import ReactPlayer from "react-player";
@@ -15,12 +15,21 @@ import {moviesAPI} from "../../api/api";
 import {useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {setDetailMovie} from "../../redux/slices/moviesSlice";
-import {LoadingOverlay} from "@mantine/core";
+import {LoadingOverlay, SimpleGrid, Tabs} from "@mantine/core";
 import {youtube_parse_url} from "../../utils/youtube_parse_url";
+import VideoList from "../../components/VideoList/VideoList";
 
 const opts = {
     height: '700',
     width: '1250',
+    playerVars: {
+        autoplay: 1,
+    },
+};
+
+const opts2 = {
+    height: '200',
+    width: '300',
     // playerVars: {
     //     autoplay: 1,
     // },
@@ -53,10 +62,12 @@ const DetailVideo = () => {
         return <LoadingOverlay visible={true}/>
     }
 
-    const videoId =  youtube_parse_url(state.videos.trailers[0].url)
-    
-    console.log(state)
+    const videoId = state?.videos?.trailers[0]?.url ? youtube_parse_url(state.videos.trailers[0].url) : null
+    const allVideos = state.videos.trailers
+    const persons = state.persons.slice(0, 15)
+    const facts = state.facts
 
+    console.log(state)
 
 
     return (
@@ -66,7 +77,7 @@ const DetailVideo = () => {
                 <YouTube videoId={videoId} opts={opts} className='videocontainer'/>
             </div>
 
-            <div className='black-background'>
+            <div className='black-background' style={{marginTop: 0}}>
                 <section className="movieinformation container">
                     <div className="detail-content">
                         <div className="movielogo">
@@ -75,12 +86,15 @@ const DetailVideo = () => {
                         <div className="movie-descr">
                             <div>
                                 <div style={{fontSize: '30px', fontWeight: 'bold'}}>{state.name}</div>
-                                <p>"{state.alternativeName}"</p>
+                                <p>{state.alternativeName}</p>
                             </div>
                             <div className="movierelease">
                     <span className="year">
                         {state.year}
                     </span>
+                                <span className="year">
+                    </span>
+
                                 <span className="rating">
                        <Star
                            size={16}
@@ -89,25 +103,108 @@ const DetailVideo = () => {
                        /> {state.votes.kp}
                     </span>
                                 <span className="timeduration">
-                        {state.genres.map((e)=>{
+                        {state.genres.map((e) => {
                             return ` #${e.name}`
                         })}
                     </span>
                             </div>
-                            <div className="description">
-                                {state.description}
-                            </div>
-                            <div className="castinformation">
-                                <p><span className="name">Director:</span> Kyle Newacheck</p>
-                                <p><span className="name">Screenplay:</span> James Vanderbilt</p>
-                                <p><span className="name">Producers:</span> Adam Sandler, James Vanderbilt, Allen
-                                    Covert, James
-                                    D.
-                                    Stern,
-                                    Tripp Vinson, A.J. Dix</p>
-                                <p><span className="name">Awards:</span> People's Choice Award for Favorite Comedic
-                                    Movie</p>
-                            </div>
+                            <Tabs variant="outline" tabPadding="md">
+                                <Tabs.Tab label="Описание" color="#fff" icon={<Photo size={14}/>}>
+                                    {state.description}
+                                </Tabs.Tab>
+                                <Tabs.Tab label="О фильме" icon={<MessageCircle size={14}/>}>
+                                    <p><span className="name">Director:</span> Kyle Newacheck</p>
+                                    <p><span className="name">Screenplay:</span> James Vanderbilt</p>
+                                    <p><span className="name">Producers:</span> Adam Sandler, James Vanderbilt, Allen
+                                        Covert, James
+                                        D.
+                                        Stern,
+                                        Tripp Vinson, A.J. Dix</p>
+                                    <p><span className="name">Awards:</span> People's Choice Award for Favorite Comedic
+                                        Movie</p>
+                                </Tabs.Tab>
+                                <Tabs.Tab label="Актеры" icon={<Settings size={14}/>}>
+                                    <div style={{width: '1200px'}}>
+                                        <Swiper
+                                            modules={[Navigation, Pagination, Scrollbar, A11y]}
+                                            spaceBetween={50}
+                                            slidesPerView={5}
+                                            navigation
+                                            pagination={{clickable: true}}
+                                            scrollbar={{draggable: true}}
+                                        >
+                                            {persons.map(e => {
+                                                return (
+                                                    <SwiperSlide key={e.id}>
+                                                        <div style={{paddingLeft: '15px'}} className='video'>
+                                                            <div style={{position: 'relative'}}>
+                                                                <div className='mylist-img video-item'>
+                                                                    <img src={e.photo} width={'200px'}
+                                                                         height={'300px'} alt=""/>
+                                                                </div>
+
+                                                                <div
+                                                                    className='video-description d-flex flex-end direction-column'>
+                                                                    <div style={{paddingLeft: '10px'}}>
+                                                                        <div>
+                                                                            <h4 className='heading f-w-8 text-shadow'>
+                                                                                {e.name}
+                                                                            </h4>
+                                                                        </div>
+                                                                        <div
+                                                                            className='info d-flex flex-middle flex-no-wrap'>
+                                                                            <p className='rated text-shadow'>
+                                                                                <strong>{e.enName}</strong>
+                                                                            </p>
+                                                                            <p className='season-count text-shadow'>
+                                                                                {e.alternativeName}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div
+                                                                            className='genere d-flex flex-no-wrap text-shadow'>
+                                                                            <p style={{
+                                                                                display: 'flex',
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center'
+                                                                            }}>
+                                                                                <Star
+                                                                                    size={16}
+                                                                                    strokeWidth={2}
+                                                                                    color={'#bf4042'}
+                                                                                />
+                                                                                {e.enProfession}</p>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </SwiperSlide>
+                                                )
+                                            })}
+                                        </Swiper>
+                                    </div>
+                                </Tabs.Tab>
+                                <Tabs.Tab label="Факты" icon={<MessageCircle size={14}/>}>
+                                    {facts.map((e, i) => {
+                                        return (
+                                            <p key={i} dangerouslySetInnerHTML={{__html: `${i + 1}. ${e.value}`}}/>
+                                        )
+                                    })}
+                                </Tabs.Tab>
+                                <Tabs.Tab label="Все трейлеры" icon={<MessageCircle size={14}/>}>
+                                    <SimpleGrid cols={4} spacing="lg">
+                                        {allVideos.map((e) => {
+                                            return (
+                                                <div>
+                                                    <YouTube videoId={youtube_parse_url(e.url)} opts={opts2}/>
+                                                </div>
+                                            )
+                                        })}
+                                    </SimpleGrid>
+
+                                </Tabs.Tab>
+                            </Tabs>
                             <div className="actions d-flex flex-start flex-middle">
                                 <button className="button service">
                                     My list
@@ -123,257 +220,7 @@ const DetailVideo = () => {
                     </div>
 
                 </section>
-                {/*<section id="mylist" className="container">*/}
-                {/*    <h4 className="mylist-heading">*/}
-                {/*        My List*/}
-                {/*    </h4>*/}
-                {/*    <div className="mylist-container d-flex flex-start flex-middle flex-no-wrap owl-carousel">*/}
-                {/*        <Swiper*/}
-                {/*            modules={[Navigation, Pagination, Scrollbar, A11y]}*/}
-                {/*            spaceBetween={50}*/}
-                {/*            slidesPerView={3}*/}
-                {/*            navigation*/}
-                {/*            pagination={{clickable: true}}*/}
-                {/*            scrollbar={{draggable: true}}*/}
-                {/*            onSwiper={(swiper) => console.log(swiper)}*/}
-                {/*            onSlideChange={() => console.log('slide change')}*/}
-                {/*        >*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*            <SwiperSlide>*/}
-                {/*                <div style={{paddingLeft: '15px'}} className="video">*/}
-                {/*                    <div style={{position: 'relative'}}>*/}
-                {/*                        <div className='mylist-img video-item'>*/}
-                {/*                            <ReactPlayer width={'325px'} height={'200px'} controls={true}*/}
-                {/*                                         url='https://www.youtube.com/watch?v=ysz5S6PUM-U'/>*/}
-                {/*                        </div>*/}
-
-                {/*                        <div className="video-description d-flex flex-end direction-column">*/}
-                {/*                            <div style={{paddingLeft: '10px'}}>*/}
-                {/*                                <div>*/}
-                {/*                                    <h4 className="heading f-w-8 text-shadow">*/}
-                {/*                                        Never Have I Ever*/}
-                {/*                                    </h4>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="info d-flex flex-middle flex-no-wrap">*/}
-                {/*                                    <p className="rated text-shadow"><strong>18+</strong></p>*/}
-                {/*                                    <p className="season-count text-shadow"> 1 Season</p>*/}
-                {/*                                </div>*/}
-                {/*                                <div className="genere d-flex flex-no-wrap text-shadow">*/}
-                {/*                                    <p>#Nudeity</p>*/}
-                {/*                                    <p>#Romance</p>*/}
-                {/*                                    <p>#Love</p>*/}
-                {/*                                </div>*/}
-                {/*                            </div>*/}
-                {/*                        </div>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </SwiperSlide>*/}
-                {/*        </Swiper>*/}
-
-                {/*    </div>*/}
-                {/*</section>*/}
+                <VideoList title={'Похожие фильмы'} data={[]}/>
             </div>
 
 
