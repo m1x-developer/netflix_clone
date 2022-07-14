@@ -1,38 +1,27 @@
 import './detailVideo.scss'
 import {Header} from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
-import {MessageCircle, Photo, Settings, Star, X} from 'tabler-icons-react';
+import {MessageCircle, Photo, Settings, Star} from 'tabler-icons-react';
 // @ts-ignore
 import YouTube from "react-youtube";
-import ReactPlayer from "react-player";
 import {Swiper, SwiperSlide} from 'swiper/react';
 import 'swiper/scss';
 import 'swiper/scss/navigation';
 import 'swiper/scss/pagination';
 import {A11y, Navigation, Pagination, Scrollbar} from "swiper";
-import {useEffect, useState} from "react";
+import {useEffect, useLayoutEffect, useState} from "react";
 import {moviesAPI} from "../../api/api";
 import {useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {setDetailMovie} from "../../redux/slices/moviesSlice";
-import {LoadingOverlay, SimpleGrid, Tabs} from "@mantine/core";
+import {Divider, LoadingOverlay, SimpleGrid, Tabs} from "@mantine/core";
 import {youtube_parse_url} from "../../utils/youtube_parse_url";
 import VideoList from "../../components/VideoList/VideoList";
 
-const opts = {
-    height: '700',
-    width: '1250',
-    playerVars: {
-        autoplay: 1,
-    },
-};
 
 const opts2 = {
     height: '200',
     width: '300',
-    // playerVars: {
-    //     autoplay: 1,
-    // },
 };
 
 const DetailVideo = () => {
@@ -41,9 +30,12 @@ const DetailVideo = () => {
     const state = useSelector(state => state.movies.detailMovie)
     const [loader, setLoader] = useState(true);
 
+    const script = document.createElement("script");
+    script.src = "/player.js";
+    document.body.appendChild(script);
 
     useEffect(() => {
-        moviesAPI.getMovieById(params.id)
+        moviesAPI.getMovieById(params.id!)
             .then(r => {
                 return (
                     dispatch(setDetailMovie(r))
@@ -62,21 +54,17 @@ const DetailVideo = () => {
         return <LoadingOverlay visible={true}/>
     }
 
-    const videoId = state?.videos?.trailers[0]?.url ? youtube_parse_url(state.videos.trailers[0].url) : null
+    const videoId = state?.videos?.trailers[0]?.url ? youtube_parse_url(state.videos.trailers[0].url) : ''
     const allVideos = state.videos.trailers
-    const persons = state.persons.slice(0, 15)
+    const persons = state.persons.length >= 20 ? state.persons.slice(0, 20) : state.persons
     const facts = state.facts
-
-    console.log(state)
-
 
     return (
         <div>
             <Header/>
             <div className="videocontainer">
-                <YouTube videoId={videoId} opts={opts} className='videocontainer'/>
+                <div id="kinobd" data-resize="1" data-bg="#000" data-kinopoisk={params.id}></div>
             </div>
-
             <div className='black-background' style={{marginTop: 0}}>
                 <section className="movieinformation container">
                     <div className="detail-content">
@@ -108,23 +96,33 @@ const DetailVideo = () => {
                         })}
                     </span>
                             </div>
-                            <Tabs variant="outline" tabPadding="md">
+                            <Tabs variant="outline" tabPadding="md" color={'red'}>
                                 <Tabs.Tab label="Описание" color="#fff" icon={<Photo size={14}/>}>
                                     {state.description}
                                 </Tabs.Tab>
                                 <Tabs.Tab label="О фильме" icon={<MessageCircle size={14}/>}>
-                                    <p><span className="name">Director:</span> Kyle Newacheck</p>
-                                    <p><span className="name">Screenplay:</span> James Vanderbilt</p>
-                                    <p><span className="name">Producers:</span> Adam Sandler, James Vanderbilt, Allen
-                                        Covert, James
-                                        D.
-                                        Stern,
-                                        Tripp Vinson, A.J. Dix</p>
-                                    <p><span className="name">Awards:</span> People's Choice Award for Favorite Comedic
-                                        Movie</p>
+                                    {
+                                        state.movieLength ?
+                                            <p><span
+                                                className="name-desc">Продолжительность:</span> {state.movieLength} мин
+                                            </p> : null
+                                    }
+                                    {
+                                        state.slogan ?
+                                            <p><span className="name-desc">Слоган:</span> {state.slogan}</p> : null
+                                    }
+                                    {
+                                        state.ratingMpaa ?
+                                            <p><span className="name-desc">Рейтинг:</span> {state.ratingMpaa}</p> : null
+                                    }
+                                    {
+                                        state.budget?.value && state.budget?.currency ? <p><span
+                                            className="name-desc">Бютжет:</span> {state.budget.value} {state.budget.currency}
+                                        </p> : null
+                                    }
                                 </Tabs.Tab>
                                 <Tabs.Tab label="Актеры" icon={<Settings size={14}/>}>
-                                    <div style={{width: '1200px'}}>
+                                    <div style={{width: '1100px'}}>
                                         <Swiper
                                             modules={[Navigation, Pagination, Scrollbar, A11y]}
                                             spaceBetween={50}
@@ -188,7 +186,10 @@ const DetailVideo = () => {
                                 <Tabs.Tab label="Факты" icon={<MessageCircle size={14}/>}>
                                     {facts.map((e, i) => {
                                         return (
-                                            <p key={i} dangerouslySetInnerHTML={{__html: `${i + 1}. ${e.value}`}}/>
+                                            <div>
+                                                <p key={i} dangerouslySetInnerHTML={{__html: `${i + 1}. ${e.value}`}}/>
+                                                <Divider my="sm" variant="dashed" color={"red"}/>
+                                            </div>
                                         )
                                     })}
                                 </Tabs.Tab>
@@ -196,7 +197,7 @@ const DetailVideo = () => {
                                     <SimpleGrid cols={4} spacing="lg">
                                         {allVideos.map((e) => {
                                             return (
-                                                <div>
+                                                <div key={e.url}>
                                                     <YouTube videoId={youtube_parse_url(e.url)} opts={opts2}/>
                                                 </div>
                                             )

@@ -343,7 +343,7 @@ header {
   font-weight: normal;
   line-height: 1.4;
   width: 100%;
-  font-size: 20px;
+  font-size: 16px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.45);
 }
 
@@ -653,4 +653,8 @@ footer ul li {
     padding-left: 25px;
   }
 
+}
+
+.name-desc {
+  color: #de363e;
 }

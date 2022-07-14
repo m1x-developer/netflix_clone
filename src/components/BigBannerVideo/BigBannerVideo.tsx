@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Container} from "@mantine/core";
 import ReactPlayer from "react-player";
 import {Link} from "react-router-dom";
@@ -8,10 +8,13 @@ import poster from '../../assets/tv-show/poster/never-have-ever-tv-show.webp'
 import video from '../../assets/tv-show/videos/video.mp4'
 
 const BigBannerVideo = () => {
-   // const videoRef = useRef<HTMLVideoElement>(null)
+    const videoRef = useRef<HTMLVideoElement>(null)
+    useEffect(() => {
+        videoRef.current?.play()
+    }, [])
 
     return (
-        <Container style={{width: '1450px'}}>
+        <Container style={{width: '1450px',marginLeft:0}}>
             <div>
                 <section
                     id='browse-dashboard'
@@ -19,13 +22,12 @@ const BigBannerVideo = () => {
                 >
                     <div className='hero-background-image'>
                         <video
-                            // ref={videoRef}
+                            ref={videoRef}
                             playsInline
                             muted
                             loop
                             className='hero-background-image'
-                            poster={poster}
-                            src={video}
+                            src='/trailer.mp4'
                             autoPlay
                             typeof={'video/mp4'}
 
@@ -64,36 +66,29 @@ const BigBannerVideo = () => {
                                     points='8.4639503 12.8342327 6.65837455 13.2666206 6.65837455 7.77862061 4.65323515 7.77862061 4.65323515 6.22012364 10.4690897 6.22012364 10.4690897 7.77862061 8.4639503 7.77862061'
                                 />
                             </svg>
-                            <span className='p-l-10'>#2 in India Today</span>
+                            <span className='p-l-10'>#2 Доктор Стрэндж: В мультивселенной безумия</span>
                         </div>
 
                         <div className='synopsis m-t-20' style={{maxWidth: '500px'}}>
                             <p>
-                                Getting the grades? Too easy. Getting through grief? Too hard.
-                                This year, there’s just one goal on her mind: getting the guy.
+                                Доктор Стрэндж при помощи Вонга спасает от гигантского осьминога девушку-подростка по
+                                имени Америка Чавес, которая при сильном испуге может открывать порталы в параллельные
+                                вселенные. Пытаясь уберечь новую знакомую от злой силы, жаждущей заполучить её
+                                способность, Доктор вместе с Америкой пускается в путешествие по мультивселенной.
                             </p>
                         </div>
                         <div className='buttons-container m-t-20'>
-                            <button className='play-button' onClick={() => test}>
+                            <Link to={'/detailvideo/1219909'}>
+                                <button className='play-button' onClick={() => test}>
 									<span>
 										<svg viewBox='0 0 24 24'>
 											<path d='M6 4l15 8-15 8z' fill='currentColor'/>
 										</svg>
 									</span>
-                                Play
-                            </button>
+                                    Подробнее
+                                </button>
+                            </Link>
 
-                            <button className='more-info-button m-t-20'>
-									<span>
-										<svg viewBox='0 0 24 24'>
-											<path
-                                                d='M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10zm-2 0a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8zm-9 6v-7h2v7h-2zm1-8.75a1.21 1.21 0 0 1-.877-.364A1.188 1.188 0 0 1 10.75 8c0-.348.123-.644.372-.886.247-.242.54-.364.878-.364.337 0 .63.122.877.364.248.242.373.538.373.886s-.124.644-.373.886A1.21 1.21 0 0 1 12 9.25z'
-                                                fill='currentColor'
-                                            />
-										</svg>
-									</span>{' '}
-                                <Link to={'/detailvideo'}>More info</Link>
-                            </button>
                         </div>
                     </div>
                 </section>

@@ -15,7 +15,7 @@ const VideoList: FC<Props> = ({title, data}) => {
 
     return (
         <section id='mylist' className='container'>
-            <h4 className='mylist-heading'>{title}</h4>
+            <h2 className='mylist-heading'>{title}</h2>
             <div className='mylist-container d-flex flex-start flex-middle flex-no-wrap owl-carousel'>
                 <Swiper
                     modules={[Navigation, Pagination, Scrollbar, A11y]}

@@ -27,4 +27,29 @@ export const moviesAPI = {
                 return r.data
             })
     },
+    getImageById() {
+        return API.get(`/image?field=movieId&search=326&field=type&search=backdrops&field=language&search=de&token=${API_KEY}`)
+            .then(r => {
+                return r.data
+            })
+    },
+    async getMoviesByFilter() {
+        const {data} = await API.get(`/movie?field=rating.kp&search=7-10&field=year&search=2017-2020&field=typeNumber&search=1&sortField=year&sortType=1&sortField=votes.imdb&sortType=-1&token=${API_KEY}`)
+        return data;
+    },
+    async getSeriesByFilter() {
+        const {data} = await API.get(`/movie?field=rating.kp&search=7-10&field=year&search=2017-2020&field=typeNumber&search=2&sortField=year&sortType=1&sortField=votes.imdb&sortType=-1&token=${API_KEY}`)
+        return data;
+    },
+    async getСartoonsByFilter() {
+        const {data} = await API.get(`/movie?field=rating.kp&search=7-10&field=year&search=2017-2020&field=typeNumber&search=3&sortField=year&sortType=1&sortField=votes.imdb&sortType=-1&token=${API_KEY}`)
+        return data;
+    },
+    async getFavorites(query:string) {
+        // const {data} = await API.get(`/movie?${filters.genre}&search[]=${filters.year}&field[]=year&search[]=${filters.rating}&field=rating.kp&${query}&sortField=year&sortType=${filters.sortByRelease}&limit=10&page=${page}&token=${API_KEY}`)
+        const {data} = await API.get(`/movie?${query}&token=${API_KEY}`)
+        return data;
+
+    },
+
 }

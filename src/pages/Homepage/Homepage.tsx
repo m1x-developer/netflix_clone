@@ -15,8 +15,7 @@ import BigBannerVideo from "../../components/BigBannerVideo/BigBannerVideo";
 const Homepage: FC = () => {
     const dispatch = useDispatch()
     const movies = useSelector(state=>state.movies)
-    console.log(movies)
-    
+
     useEffect(() => {
         moviesAPI.getNewMovies()
             .then(r => {
