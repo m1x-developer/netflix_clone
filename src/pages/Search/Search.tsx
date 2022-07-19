@@ -20,7 +20,7 @@ const Search = () => {
 
     const request = debounce(value => {
         async function getItems() {
-            // setLoader(true)
+            setLoader(true)
             try {
                 const movies = await moviesAPI.getItemsForSearch(value, type)
                 console.log(type)
@@ -40,8 +40,44 @@ const Search = () => {
         setInputValue(e.target.value);
     };
 
-    if (isNil(items)) {
-        return <div>Фильмов не найдено</div>
+
+    if (items.length === 0) {
+        return (
+            <>
+                <Header/>
+                <div className='black-background' style={{marginTop: '50px'}}>
+                    <div style={{width: '1300px', margin: '0 auto'}}>
+                        <div>
+                            <TextInput
+                                value={inputValue}
+                                onChange={onChange}
+                                placeholder="Введите название фильма"
+                                size="xl"
+                                variant={'filled'}
+                            />
+                        </div>
+                        <div style={{backgroundColor: 'white'}}>
+                            <RadioGroup
+                                color={'red'}
+                                value={type}
+                                onChange={setType}
+                                label="Поиск по..."
+                                required
+                            >
+                                <Radio value="1" label="Фильмы"/>
+                                <Radio value="2" label="Сериалы"/>
+                                <Radio value="3" label="Мультфильмы"/>
+                            </RadioGroup>
+                        </div>
+                        <div style={{marginTop: '30px'}}>
+                            <h1 style={{textAlign: 'center', color: 'white'}}>Фильмов не найдено ;(</h1>
+                        </div>
+                    </div>
+                </div>
+                <Footer/>
+            </>
+
+        )
     }
 
     return (

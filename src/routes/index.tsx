@@ -27,9 +27,9 @@ export const AppRoutes = () => {
                         id: user.uid,
                         token: user.refreshToken,
                     }))
-                    // navigate('/homepage')
+                    navigate('/homepage')
                 } else {
-                    // navigate('/')
+                    navigate('/')
                 }
 
             });

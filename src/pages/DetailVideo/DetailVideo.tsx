@@ -184,7 +184,7 @@ const DetailVideo = () => {
                                     </div>
                                 </Tabs.Tab>
                                 <Tabs.Tab label="Факты" icon={<MessageCircle size={14}/>}>
-                                    {facts.map((e, i) => {
+                                    {facts && facts.map((e, i) => {
                                         return (
                                             <div>
                                                 <p key={i} dangerouslySetInnerHTML={{__html: `${i + 1}. ${e.value}`}}/>
