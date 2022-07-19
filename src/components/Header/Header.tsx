@@ -4,12 +4,13 @@ import {Link} from 'react-router-dom'
 import {getAuth, signOut} from 'firebase/auth'
 
 import './header.scss'
-import {Avatar} from '@mantine/core'
-import {useDispatch, useSelector} from 'react-redux'
+import {Avatar, Select} from '@mantine/core'
+import {useDispatch} from 'react-redux'
 import {removeUser} from '../../redux/slices/userSlice'
 import {useAuth} from '../../hooks/useAuth'
-import {Heart, Notification} from "tabler-icons-react";
+import {Heart, Notification, Search} from "tabler-icons-react";
 import {useFavourites} from "../../hooks/useFavorite";
+import {useState} from "react";
 
 export const Header = () => {
     const dispatch = useDispatch()
@@ -39,8 +40,8 @@ export const Header = () => {
                         <Link to={'/homepage'} className='nav-item home'>
                             Домой
                         </Link>
-                        <Link to={'/twshows/'} className='nav-item home'>
-                            Тв шоу
+                        <Link to={'/series/'} className='nav-item home'>
+                            Сериалы
                         </Link>
                         <Link to={'/movies/'} className='nav-item home'>
                             Фильмы
@@ -52,6 +53,15 @@ export const Header = () => {
                 </nav>
             </div>
             <div className='righticons d-flex flex-end flex-middle align-items-center'>
+                <div>
+                    <Link to={'/search/'}>
+                        <Search
+                            size={30}
+                            strokeWidth={2}
+                            color={'white'}
+                        />
+                    </Link>
+                </div>
                 <div>
                     <Link to={'/favorites/'} className='nav-item home' style={{display: 'flex', alignItems: 'center'}}>
                         <Heart

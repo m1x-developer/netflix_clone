@@ -13,15 +13,13 @@ const Favorites = () => {
     const items = useSelector(state => state.movies.movieFavorites)
     const [loader, setLoader] = useState(true);
     const query = favourites.map(el => `search=${el}&field=id`).join('&')
-    
-    console.log(items)
+
 
     useEffect(() => {
         async function getItems() {
             try {
                 if (query) {
                     const movies = await moviesAPI.getFavorites(query)
-                    console.log(movies)
                     dispatch(setMovieByFavorites(movies.docs))
                 }
             } catch (e) {

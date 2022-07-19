@@ -3,6 +3,9 @@ import Homepage from "../pages/Homepage/Homepage";
 import DetailVideo from "../pages/DetailVideo/DetailVideo";
 import Movies from "../pages/Movies/Movies";
 import Favorites from "../pages/Favorites/Favorites";
+import Cartoons from "../pages/Cartoons/Cartoons";
+import Series from "../pages/Series/Series";
+import Search from "../pages/Search/Search";
 
 export const protectedRoutes = [
 	{
@@ -27,17 +30,17 @@ export const protectedRoutes = [
 		],
 	},
 	{
-		path: '/tvshows/',
-		element: <DetailVideo />,
+		path: '/series/',
+		element: <Series />,
 		children: [
-			{ path: '/tvshows/', element: <DetailVideo /> },
+			{ path: '/series/', element: <Series /> },
 		],
 	},
 	{
 		path: '/cartoons/',
-		element: <DetailVideo />,
+		element: <Cartoons/>,
 		children: [
-			{ path: '/cartoons/', element: <DetailVideo /> },
+			{ path: '/cartoons/', element: <Cartoons/> },
 		],
 	},
 	{
@@ -45,6 +48,13 @@ export const protectedRoutes = [
 		element: <Favorites />,
 		children: [
 			{ path: '/favorites/', element: <Favorites /> },
+		],
+	},
+	{
+		path: '/search/',
+		element: <Search />,
+		children: [
+			{ path: '/search/', element: <Search /> },
 		],
 	},
 ]
